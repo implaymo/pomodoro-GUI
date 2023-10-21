@@ -7,8 +7,8 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
+WORK_MIN = 1
+SHORT_BREAK_MIN = 20
 LONG_BREAK_MIN = 20
 reps = 0
 
@@ -23,15 +23,25 @@ def start_timer():
     work_time_secs = WORK_MIN * 60
     short_break_secs = SHORT_BREAK_MIN * 60
     long_break_secs = LONG_BREAK_MIN * 60
+    time = 0
+    # Checks in which rep the timer is to switch amount of time
     if reps in [0, 2, 4, 6]:
         count_down(work_time_secs)
+        time = work_time_secs
         reps += 1
     elif reps in [1, 3, 5]:
         count_down(short_break_secs)
+        time = short_break_secs
         reps += 1
     elif reps in [7]:
         count_down(long_break_secs)
+        time = long_break_secs
         reps = 0
+
+    # Keeps timer running till it reaches the 8th time
+    if reps < 8:
+        milliseconds = int(time * 1000)
+        root.after(milliseconds, start_timer)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
