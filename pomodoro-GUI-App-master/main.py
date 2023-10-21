@@ -13,27 +13,40 @@ LONG_BREAK_MIN = 20
 reps = 0
 
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+# ---------------------------- TIMER RESET ------------------------------- #
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
+
 def start_timer():
-    count_down(5 * 60)
-
-
+    global reps
+    work_time_secs = WORK_MIN * 60
+    short_break_secs = SHORT_BREAK_MIN * 60
+    long_break_secs = LONG_BREAK_MIN * 60
+    if reps in [0, 2, 4, 6]:
+        count_down(work_time_secs)
+        reps += 1
+    elif reps in [1, 3, 5]:
+        count_down(short_break_secs)
+        reps += 1
+    elif reps in [7]:
+        count_down(long_break_secs)
+        reps = 0
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
-def count_down(count):
+def count_down(seconds):
     """Count down timer"""
     # Transforms time into minutes and seconds
-    count_min = math.floor(count/60)
-    count_sec = count % 60
+    count_min = math.floor(seconds / 60)
+    count_sec = seconds % 60
     # Setups timer to work like 00:00
-    canvas.itemconfig(timer, text=f"{count_min:02}:{count_sec:02}")
+    canvas.itemconfig(timer, text=f"{count_min}:{count_sec:02}")
     # Decreases time in timer
-    if count > 0:
-        root.after(1000, count_down, count - 1)
+    if seconds > 0:
+        root.after(1000, count_down, seconds - 1)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -56,9 +69,9 @@ check_mark = canvas.create_text(200, 400, text="✔️", fill=GREEN, font=(FONT_
 # Start button
 start_button = Button(text="Start", command=start_timer)
 start_button.grid(column=1, row=3)
+
 # Reset button
 reset_button = Button(text="Reset")
 reset_button.grid(column=3, row=3)
-
 
 root.mainloop()
