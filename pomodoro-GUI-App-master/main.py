@@ -1,4 +1,5 @@
 from tkinter import *
+import math
 
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
@@ -9,22 +10,30 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-SECS = 60
+reps = 0
 
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
-    count_down(1500)
+    count_down(5 * 60)
+
+
+
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
-
-def count_down(seconds = 120):
-    mins, secs = divmod(seconds, 60)
-    canvas.itemconfig(timer, text=f"{mins}:{secs:02}")
-    if seconds > 0:
-        root.after(1000, count_down, seconds- 1)
+def count_down(count):
+    """Count down timer"""
+    # Transforms time into minutes and seconds
+    count_min = math.floor(count/60)
+    count_sec = count % 60
+    # Setups timer to work like 00:00
+    canvas.itemconfig(timer, text=f"{count_min:02}:{count_sec:02}")
+    # Decreases time in timer
+    if count > 0:
+        root.after(1000, count_down, count - 1)
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -44,27 +53,12 @@ timer = canvas.create_text(200, 250, text="00:00", fill="white", font=(FONT_NAME
 timer_text = canvas.create_text(200, 100, text="TIMER", fill=GREEN, font=(FONT_NAME, 50, "bold"))
 check_mark = canvas.create_text(200, 400, text="✔️", fill=GREEN, font=(FONT_NAME, 10, "bold"))
 
-
-
 # Start button
 start_button = Button(text="Start", command=start_timer)
 start_button.grid(column=1, row=3)
 # Reset button
 reset_button = Button(text="Reset")
 reset_button.grid(column=3, row=3)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 root.mainloop()
