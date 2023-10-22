@@ -9,25 +9,28 @@ YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
 WORK_MIN = 0.1
 SHORT_BREAK_MIN = 0.1
-LONG_BREAK_MIN = 0.1
+LONG_BREAK_MIN = 20
 REPS = 0
 TIMER_HEADER = "TIMER"
 WORK_HEADER = "WORK"
 BREAK_HEADER = "BREAK"
 X_CHECK_MARK = 180
-Y_CHECK_MARK = 400
-
-
 
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
-# def reset_timer():
+def reset_timer():
+    """RESETS TIMER"""
+    check_mark_reset()
+    canvas.delete("clear_text")
+    root.after_cancel(COUNTING)
 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
+
 def start_timer():
+    """STARTS TIMER"""
     global REPS
     global X_CHECK_MARK
     work_time_secs = WORK_MIN * 60
@@ -37,8 +40,9 @@ def start_timer():
     if REPS in [0, 2, 4, 6]:
         count_down(work_time_secs)
         canvas.itemconfig(timer_text, text=WORK_HEADER, fill=GREEN, font=(FONT_NAME, 50, "bold"))
-        canvas.create_text(X_CHECK_MARK, Y_CHECK_MARK, text="✔️", fill=GREEN,
+        canvas.create_text(X_CHECK_MARK, 400, text="✔️", fill=GREEN,
                            font=(FONT_NAME, 10, "bold"), tags="clear_text")
+        # Changes checkmark position
         X_CHECK_MARK += 20
     elif REPS in [1, 3, 5]:
         count_down(short_break_secs)
@@ -46,18 +50,24 @@ def start_timer():
     elif REPS in [7]:
         count_down(long_break_secs)
         canvas.itemconfig(timer_text, text=BREAK_HEADER, fill=RED, font=(FONT_NAME, 50, "bold"))
-        # Clears checkmark and changes position to the first one
+        # Clears checkmarks and changes position
         canvas.delete("clear_text")
         X_CHECK_MARK = 180
         REPS = -1
     REPS += 1
-    print(REPS)
 
+def check_mark_reset():
+    """Resets checkmark position and reps"""
+    global REPS
+    global X_CHECK_MARK
+    REPS = 0
+    X_CHECK_MARK = 180
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 def count_down(seconds):
-    """Count down timer"""
+    """Countdown time"""
+    global COUNTING
     # Transforms time into minutes and seconds
     count_min = math.floor(seconds / 60)
     count_sec = seconds % 60
@@ -65,7 +75,7 @@ def count_down(seconds):
     canvas.itemconfig(timer, text=f"{count_min:02}:{count_sec:02}")
     # Decreases time in timer
     if seconds > 0:
-        root.after(1000, count_down, seconds - 1)
+        COUNTING = root.after(1000, count_down, seconds - 1)
     else:
         start_timer()
 
@@ -76,6 +86,7 @@ def count_down(seconds):
 root = Tk()
 root.title("Pomodoro timer")
 root.config(padx=100, pady=50, bg=YELLOW)
+
 
 # Image setup
 canvas = Canvas(root, width=400, height=500, bg=YELLOW, highlightthickness=0)
@@ -92,7 +103,7 @@ start_button = Button(text="Start", command=start_timer)
 start_button.grid(column=1, row=3)
 
 # Reset button
-reset_button = Button(text="Reset")
+reset_button = Button(text="Reset", command=reset_timer)
 reset_button.grid(column=3, row=3)
 
 root.mainloop()
