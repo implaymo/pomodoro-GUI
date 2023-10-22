@@ -7,21 +7,24 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 0.1
-SHORT_BREAK_MIN = 0.1
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 REPS = 0
 TIMER_HEADER = "TIMER"
 WORK_HEADER = "WORK"
 BREAK_HEADER = "BREAK"
 X_CHECK_MARK = 180
+COUNTING = None
 
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
 def reset_timer():
     """RESETS TIMER"""
+    global COUNTING
     check_mark_reset()
+    canvas.itemconfig(timer, text="00:00")
     canvas.delete("clear_text")
     root.after_cancel(COUNTING)
 
