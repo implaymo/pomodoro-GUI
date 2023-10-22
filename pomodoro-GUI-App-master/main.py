@@ -7,9 +7,9 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+WORK_MIN = 0.1
+SHORT_BREAK_MIN = 0.1
+LONG_BREAK_MIN = 0.1
 REPS = 0
 TIMER_HEADER = "TIMER"
 WORK_HEADER = "WORK"
@@ -22,6 +22,8 @@ Y_CHECK_MARK = 400
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
+# def reset_timer():
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
@@ -31,11 +33,12 @@ def start_timer():
     work_time_secs = WORK_MIN * 60
     short_break_secs = SHORT_BREAK_MIN * 60
     long_break_secs = LONG_BREAK_MIN * 60
-    # Checks in which rep the timer is to switch amount of time
+    # Checks which rep the timer is and switches the amount of time
     if REPS in [0, 2, 4, 6]:
         count_down(work_time_secs)
         canvas.itemconfig(timer_text, text=WORK_HEADER, fill=GREEN, font=(FONT_NAME, 50, "bold"))
-        canvas.create_text(X_CHECK_MARK, Y_CHECK_MARK, text="✔️", fill=GREEN, font=(FONT_NAME, 10, "bold"))
+        canvas.create_text(X_CHECK_MARK, Y_CHECK_MARK, text="✔️", fill=GREEN,
+                           font=(FONT_NAME, 10, "bold"), tags="clear_text")
         X_CHECK_MARK += 20
     elif REPS in [1, 3, 5]:
         count_down(short_break_secs)
@@ -43,8 +46,12 @@ def start_timer():
     elif REPS in [7]:
         count_down(long_break_secs)
         canvas.itemconfig(timer_text, text=BREAK_HEADER, fill=RED, font=(FONT_NAME, 50, "bold"))
-        REPS = 0
+        # Clears checkmark and changes position to the first one
+        canvas.delete("clear_text")
+        X_CHECK_MARK = 180
+        REPS = -1
     REPS += 1
+    print(REPS)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
